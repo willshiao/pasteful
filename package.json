@@ -1,0 +1,17 @@
+{
+  "name": "pasteful",
+  "version": "1.0.0",
+  "description": "A feature-rich pastebin site written in Node.js using MongoDB and Redis.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pastebin",
+    "restify",
+    "mongoDB",
+    "redis"
+  ],
+  "author": "William Shiao",
+  "license": "MIT"
+}
