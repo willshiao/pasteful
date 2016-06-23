@@ -13,5 +13,13 @@
     "redis"
   ],
   "author": "William Shiao",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willshiao/pasteful.git"
+  },
+  "bugs": {
+    "url": "https://github.com/willshiao/pasteful/issues"
+  },
+  "homepage": "https://github.com/willshiao/pasteful#readme"
 }
