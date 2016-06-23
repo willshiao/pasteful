@@ -21,5 +21,12 @@
   "bugs": {
     "url": "https://github.com/willshiao/pasteful/issues"
   },
-  "homepage": "https://github.com/willshiao/pasteful#readme"
+  "homepage": "https://github.com/willshiao/pasteful#readme",
+  "dependencies": {
+    "config": "^1.21.0",
+    "mongoose": "^4.5.1",
+    "redis": "^2.6.2",
+    "restify": "^4.1.1",
+    "restify-router": "^0.2.1"
+  }
 }
