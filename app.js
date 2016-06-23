@@ -10,12 +10,16 @@ const logger = require('winston').loggers.get('server');
 
 //Initialization
 const app = restify.createServer({
-  name: config.get('server.name'),
-  spdy: config.get('server.spdy')
+  name: config.get('server.name')
 });
 
 //Apply routes
 require('./routes/index.js')(app);
+
+app.get('/test', (req, res, next) => {
+  res.send('OK');
+  next();
+});
 
 //Bind to port
 app.listen(config.get('server.port'));

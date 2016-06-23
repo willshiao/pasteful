@@ -4,8 +4,7 @@
 {
   "server": { //Restify server settings
     "name": "pasteful", //The server name set in HTTP headers
-    "port": 8080,
-    "spdy": {} //node-spdy settings (optional)
+    "port": 8080
   },
 
   "logger": {
