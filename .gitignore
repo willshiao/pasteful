@@ -87,3 +87,6 @@ $RECYCLE.BIN/
 #Sublime Text Project files
 *.sublime-project
 *.sublime-workspace
+
+#Log files
+logs/*

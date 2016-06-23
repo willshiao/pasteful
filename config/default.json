@@ -1,0 +1,61 @@
+//******************************
+// Default configuration file
+//******************************
+{
+  "server": { //Restify server settings
+    "name": "pasteful", //The server name set in HTTP headers
+    "port": 8080,
+    "spdy": {} //node-spdy settings (optional)
+  },
+
+  "logger": {
+    "server": {
+      "console": {
+        "level": "silly",
+        "colorize": true,
+        "label": "Server"
+      },
+      "logToFile": true,
+      "file": {
+        "level": "debug",
+        "colorize": "false",
+        "dirname": "logs",
+        "filename": "site.",
+        "datePattern": "yyyy-MM-dd.log",
+        "label": "Server"
+      }
+    },
+    "db": {
+      "console": {
+        "level": "silly",
+        "colorize": true,
+        "label": "MongoDB"
+      },
+      "logToFile": true,
+      "file": {
+        "level": "debug",
+        "colorize": "false",
+        "dirname": "logs",
+        "filename": "site.",
+        "datePattern": "yyyy-MM-dd.log",
+        "label": "MongoDB"
+      }
+    },
+    "cache": {
+      "console": {
+        "level": "silly",
+        "colorize": true,
+        "label": "Redis"
+      },
+      "logToFile": true,
+      "file": {
+        "level": "debug",
+        "colorize": "false",
+        "dirname": "logs",
+        "filename": "site.",
+        "datePattern": "yyyy-MM-dd.log",
+        "label": "Redis"
+      }
+    }
+  }
+}
