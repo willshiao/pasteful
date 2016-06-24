@@ -3,8 +3,18 @@
 //******************************
 {
   "server": { //Restify server settings
+    "url": "http://localhost:8080", //The public URL of the server
     "name": "pasteful", //The server name set in HTTP headers
-    "port": 8080
+    "port": 8080,
+    "proxied": false //Whether or not to respect the x-forward-for header
+  },
+  "paste": {
+    "seed": null, //Integer seed used to generate URL slugs (optional)
+    "ttl": "7d" //Number of seconds (or ms time string [see "ms" on NPM]) before a paste is deleted
+  },
+  "db": { //MongoDB settings
+    "uri": "mongodb://localhost/pasteful",
+    "options": {} //Options for mongoose.connect (optional)
   },
 
   "logger": {
