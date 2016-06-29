@@ -2,11 +2,11 @@
 // Default configuration file
 //******************************
 {
-  "server": { //Restify server settings
+  "server": { //Express server settings
     "url": "http://localhost:8080", //The public URL of the server
     "name": "pasteful", //The server name set in HTTP headers
     "port": 8080,
-    "proxied": false //Whether or not to respect the x-forward-for header
+    "trustProxy": ["loopback"] //The value of the app.set('trust proxy') setting
   },
   "paste": {
     "seed": null, //Integer seed used to generate URL slugs (optional)

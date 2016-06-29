@@ -1,3 +1,4 @@
+'use strict';
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const config = require('config');
@@ -14,8 +15,13 @@ const pasteSchema = new Schema({
   listed: Boolean, //Whether or not it is listed in new pastes
   views: Number, //Number of page views
   createdBy: String, //IP of creator,
-  createdAt: {type: Date, index: {expireAfterSeconds: config.get('paste.ttl')}}
+  createdAt: {
+    type: Date,
+    expires: config.get('paste.ttl')
+  }
 }, {timestamps: true});
+
+pasteSchema.index({expireAt: 1}, {expireAfterSeconds: 0});
 
 pasteSchema.statics.newPaste = function(data) {
   const settings = {
