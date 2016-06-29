@@ -23,16 +23,30 @@ const pasteSchema = new Schema({
 
 pasteSchema.index({expireAt: 1}, {expireAfterSeconds: 0});
 
+pasteSchema.statics.getRecent = function(num) {
+  return this.find()
+  .where('listed', true)
+  .select({
+    _id: 0,
+    slug: 1,
+    tags: 1,
+    title: 1
+  })
+  .sort({updatedAt: -1})
+  .limit(num)
+  .lean().exec();
+}
+
 pasteSchema.statics.newPaste = function(data) {
   const settings = {
-    title: data.title || "",
+    title: data.title || 'Untitled',
     tags: data.tags || [],
     content: data.content || null,
     slug: shortid.generate(),
     userId: data.userId || "",
     listed: ('listed' in data) ? data.listed : true,
     views: 0,
-    createdBy: data.ip || 'unknown'
+    createdBy: data.ip || 'Unknown'
   };
   return new this(settings);
 }

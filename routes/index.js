@@ -29,8 +29,12 @@ router.post('/', newPaste);
 router.post('/new', newPaste);
 router.post('/pastes/new', newPaste);
 
+router.get('/recent', getRecentPastes);
+router.get('/pastes/recent', getRecentPastes);
+
 router.get('/:id', getPaste);
 router.get('/pastes/:id', getPaste);
+
 
 
 function newPaste(req, res, next) {
@@ -81,5 +85,15 @@ function getPaste(req, res, next) {
     });
   }
 };
+
+function getRecentPastes(req, res, next) {
+  Paste.getRecent(10)
+  .then(results => {
+    res.json(results);
+  }).catch(err => {
+    logger.error(err);
+    next(err);
+  });
+}
 
 module.exports = router;
