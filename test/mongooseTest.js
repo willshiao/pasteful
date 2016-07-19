@@ -5,9 +5,10 @@ const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const config = require('config');
 const Chance = require('chance');
-const Paste = require('../models/paste');
+const _ = require('lodash');
 const chance = new Chance(4311613);
 const clearDb = require('mocha-mongoose')(config.get('db.uri'));
+const Paste = require('../models/paste');
 
 mongoose.Promise = Promise;
 chai.should();
@@ -26,58 +27,73 @@ describe('models', function() {
     if (mongoose.connection.db) return done();
     mongoose.connect(config.get('db.uri'), config.get('db.options'), done);
   });
+
+  // afterEach(function(done) {
+  //   clearDb(done);
+  // });
   
-  describe('pasteModel', function() {
+  describe('Paste', function() {
     it('can add and retrieve a basic paste successfully', function(done) {
       const contents = generateContents();
       const paste = new Paste(contents);
 
       paste.save()
-      .then(prod => {
-        const id = prod._id;
-        return Paste.findById(id).lean().exec();
-      })
-      .then(data => {
-        comparePaste(data, contents);
-        done();
-      })
-      .catch(err => {
-        done(err);
+        .then(prod => Paste.findById(prod._id).lean().exec())
+        .then(data => {
+          comparePaste(data, contents);
+          done();
+        })
+        .catch(done);
+    });
+
+    describe('#newPaste', function() {
+      it('can create new pastes', function(done) {
+        const contents = generateContents(['views']);
+        const paste = Paste.newPaste(contents);
+
+        paste.save()
+          .then(prod => Paste.findById(prod._id).lean().exec())
+          .then(data => {
+            comparePaste(data, contents, ['views']);
+            done()
+          })
+          .catch(done);
       });
     });
 
-    after(function(done) {
-      clearDb(done);
-    });
+    function generateContents(exclude) {
+      exclude = exclude || [];
+      return _.omit({
+        title: chance.word(),
+        tags: chance.n(chance.word, chance.integer({
+          min: 0,
+          max: 10
+        })),
+        content: chance.paragraph(),
+        listed: chance.bool(),
+        views: chance.integer({min: 0, max: 1000000000}),
+        createdBy: chance.ip()
+      }, exclude);
+    }
 
+    function comparePaste(dbData, schema, exclude) {
+      exclude = exclude || [];
+      const expected = ['_id', '__v', 'createdAt', 'updatedAt'];
+      const shouldEqual = _.xor([
+        'content', 'title', 'views', 'listed',
+        'createdBy'
+      ], exclude);
+
+      _.each(expected, propName => {
+        dbData.should.have.property(propName)
+      });
+
+      _.each(shouldEqual, propName => {
+        dbData[propName].should.equal(schema[propName]);
+      });
+      dbData.tags.should.eql(schema.tags);
+    }
   });
-
-  function generateContents() {
-    return {
-      title: chance.word(),
-      tags: chance.n(chance.word, chance.integer({
-        min: 0,
-        max: 10
-      })),
-      content: chance.paragraph(),
-      listed: chance.bool(),
-      views: chance.integer({min: 0, max: 1000000000}),
-      createdBy: chance.ip()
-    };
-  }
-
-  function comparePaste(dbData, schema) {
-    dbData.should.have.property('_id');
-    dbData.should.have.property('__v');
-    dbData.should.have.property('createdAt');
-    dbData.should.have.property('updatedAt');
-
-    dbData.content.should.equal(schema.content);
-    dbData.title.should.equal(schema.title);
-    dbData.views.should.equal(schema.views);
-    dbData.listed.should.equal(schema.listed);
-    dbData.createdBy.should.equal(schema.createdBy);
-    dbData.tags.should.eql(schema.tags);
-  }
-  
 });
+
+  

@@ -46,7 +46,7 @@ pasteSchema.statics.newPaste = function(data) {
     userId: data.userId || "",
     listed: ('listed' in data) ? data.listed : true,
     views: 0,
-    createdBy: data.ip || 'Unknown'
+    createdBy: data.ip || data.createdBy || 'Unknown'
   };
   return new this(settings);
 }
