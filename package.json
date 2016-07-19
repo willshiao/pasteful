@@ -4,8 +4,9 @@
   "description": "A feature-rich pastebin site written in Node.js using MongoDB and Redis.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "node ./node_modules/cross-env/bin/cross-env.js NODE_ENV=test node ./node_modules/mocha/bin/mocha",
+    "travis-test": "node ./node_modules/cross-env/bin/cross-env.js NODE_ENV=test node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha"
   },
   "keywords": [
     "pastebin",
@@ -33,5 +34,14 @@
     "shortid": "^2.2.6",
     "winston": "^2.2.0",
     "winston-daily-rotate-file": "^1.1.4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chance": "^1.0.4",
+    "cross-env": "^2.0.0",
+    "istanbul": "^0.4.4",
+    "mocha": "^2.5.3",
+    "mocha-mongoose": "^1.2.0",
+    "mongodb": "^2.2.4"
   }
 }

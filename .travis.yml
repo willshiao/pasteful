@@ -1,0 +1,14 @@
+language: node_js
+services: mongodb
+node_js:
+  - "5"
+  - "6"
+  - "6.3"
+  - "4"
+  - "4.3"
+  - "4.2"
+  - "4.1"
+  - "4.0"
+  - "node"
+script: "npm run-script travis-test"
+after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
