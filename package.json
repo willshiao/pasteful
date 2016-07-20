@@ -39,6 +39,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "chance": "^1.0.4",
+    "coveralls": "^2.11.11",
     "cross-env": "^2.0.0",
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
