@@ -28,9 +28,9 @@ describe('models', function() {
     mongoose.connect(config.get('db.uri'), config.get('db.options'), done);
   });
 
-  // afterEach(function(done) {
-  //   clearDb(done);
-  // });
+  afterEach(function(done) {
+    clearDb(done);
+  });
   
   describe('Paste', function() {
     it('can add and retrieve a basic paste successfully', function(done) {
@@ -59,6 +59,46 @@ describe('models', function() {
           })
           .catch(done);
       });
+
+      it('uses default values', function(done) {
+        const paste = Paste.newPaste();
+
+        paste.save()
+          .then(prod => Paste.findById(prod._id).lean().exec())
+          .then(data => {
+            let expected = {
+              title: 'Untitled',
+              tags: [],
+              content: "",
+              listed: true,
+              createdBy: 'Unknown',
+              views: 0
+            };
+            comparePaste(data, expected);
+            done()
+          })
+          .catch(done);
+      });
+    });
+
+    describe('#getRecent', function (done) {
+      it('retrieves recent promises', function() {
+        let contents = [
+          generateContents(), generateContents(),
+          generateContents()
+        ].map(item => {item.listed = true; return item;});
+
+        Promise.each(contents, content => {
+          return new Paste(content).save();
+        }).then(() => Paste.getRecent())
+          .then(recent => {
+            console.log('recent:', recent);
+            _.isEqualWith(recent, contents, comparePaste);
+            done();
+          })
+          .catch(done);
+      });
+      
     });
 
     function generateContents(exclude) {

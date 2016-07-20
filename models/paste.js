@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 const config = require('config');
 const Schema = mongoose.Schema;
+const _ = require('lodash');
 
 const pasteSchema = new Schema({
   title: String, //Title of the paste (optional)
@@ -35,21 +36,30 @@ pasteSchema.statics.getRecent = function(num) {
   .sort({updatedAt: -1})
   .limit(num)
   .lean().exec();
-}
+};
 
 pasteSchema.statics.newPaste = function(data) {
+  if(data === undefined) data = {};
+  _.defaultsDeep(data, {
+    title: 'Untitled',
+    tags: [],
+    content: "",
+    userId: "",
+    listed: true,
+    createdBy: 'Unknown'
+  });
   const settings = {
-    title: data.title || 'Untitled',
-    tags: data.tags || [],
-    content: data.content || null,
+    title: data.title,
+    tags: data.tags,
+    content: data.content,
     slug: shortid.generate(),
-    userId: data.userId || "",
-    listed: ('listed' in data) ? data.listed : true,
+    userId: data.userId,
+    listed: data.listed,
     views: 0,
-    createdBy: data.ip || data.createdBy || 'Unknown'
+    createdBy: data.ip || data.createdBy
   };
   return new this(settings);
-}
+};
 
 
 module.exports = mongoose.model('Paste', pasteSchema);

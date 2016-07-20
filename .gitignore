@@ -84,9 +84,15 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-#Sublime Text Project files
+# Sublime Text Project files
 *.sublime-project
 *.sublime-workspace
 
-#Log files
+# Log files
 logs/*
+
+# All configuration files
+config/*
+# Except the default and test configs
+!config/default.json
+!config/test.json
