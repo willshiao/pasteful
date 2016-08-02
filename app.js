@@ -8,16 +8,19 @@ const app = express();
 
 const config = require('config');
 const sid = require('shortid');
-const mongoose = require('mongoose');
+const ms = require('ms');
 const winston = require('winston');
+const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
+const PasteCleaner = require('./lib/paste-cleaner');
 const errorHandlers = require('./lib/error-handlers');
 const errors = require('./lib/errors');
 
-//Load server serverLogger
+//Load loggers
 const serverLogger = winston.loggers.get('server');
 const dbLogger = winston.loggers.get('db');
+
 //Load routes
 const indexRoute = require('./routes/index');
 
@@ -34,6 +37,10 @@ dbLogger.debug('Connecting to mongoDB...');
 mongoose.connect(config.get('db.uri'), config.get('db.options'));
 dbLogger.debug('Connected!');
 
+//Set up paste cleaner
+const cleaner = new PasteCleaner(ms(config.get('paste.checkInterval')), ms(config.get('paste.ttl')));
+cleaner.start(true);
+
 //Set app settings
 app.set('trust proxy', config.get('server.trustProxy'));
 
@@ -49,6 +56,7 @@ app.use((req, res, next) => {
 //Bind error handlers
 app.use(errorHandlers.ArgumentErrorHandler);
 app.use(errorHandlers.NotFoundErrorHandler);
+app.use(errorHandlers.MongoErrorHandler);
 
 
 //Bind to port

@@ -1,6 +1,7 @@
 //******************************
 // Default configuration file
 //******************************
+module.exports = 
 {
   "server": { //Express server settings
     "url": "http://localhost:8080", //The public URL of the server
@@ -10,7 +11,12 @@
   },
   "paste": {
     "seed": null, //Integer seed used to generate URL slugs (optional)
-    "ttl": "7d" //Number of seconds (or ms time string [see "ms" on NPM]) before a paste is deleted
+    "ttl": "2d", //ms time string (see "ms" on NPM) before a paste is deleted
+    "checkInterval": "10s", //ms time string for how often to check for and delete old pastes
+    "maxSize": 1024*1024*12, //Max paste size, in bytes
+    "large": {
+      "maxSize": 1024*1024*100 //Max large paste size, in bytes
+    }
   },
   "db": { //MongoDB settings
     "uri": "mongodb://localhost/pasteful",
@@ -67,4 +73,4 @@
       }
     }
   }
-}
+};

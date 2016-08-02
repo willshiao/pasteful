@@ -94,5 +94,5 @@ logs/*
 # All configuration files
 config/*
 # Except the default and test configs
-!config/default.json
-!config/test.json
+!config/default.js
+!config/test.js
