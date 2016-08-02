@@ -48,9 +48,9 @@ router.post('/large/new', bb, newGfsPaste);
 router.get('/pastes/recent', getRecentPastes);
 router.get('/large/recent', getGfsRecentPastes);
 
-router.get('/:id', getPaste);
 router.get('/pastes/:id', getPaste);
 router.get('/large/:id', getGfsPaste);
+router.get('/:id', getBothPastes);
 
 
 function newPaste(req, res, next) {
@@ -152,17 +152,20 @@ function newGfsPaste(req, res, next) {
 
 function getPaste(req, res, next) {
   const id = req.params.id;
-  if(!shortid.isValid(id)) {
-    return next(new NotFoundError('Paste not found'));
-  } else {
-    Paste.where('slug', id).findOneAndUpdate({$inc: {'views': 1}})
-    .lean().exec().then(paste => {
-      res.type('text');
-      res.send(paste.content);
-    }).catch(err => {
-      next(new NotFoundError('Paste not found'));
-    });
-  }
+  if(!shortid.isValid(id))
+    return next(new NotFoundError('Paste not found.'));
+
+  Paste.where('slug', id)
+  .findOneAndUpdate({$inc: {'views': 1}})
+  .lean()
+  .exec()
+  .then(paste => {
+    if(paste === null)
+      return next(new NotFoundError('Paste not found.'));
+    res.type('text');
+    res.send(paste.content);
+  })
+  .catch(err => next);
 };
 
 function getRecentPastes(req, res, next) {
@@ -190,6 +193,34 @@ function getGfsRecentPastes(req, res, next) {
   LargePaste.getRecent(10)
   .then(data => {
     res.json(data);
+  }).catch(next);
+}
+
+function getBothPastes(req, res, next) {
+  const id = req.params.id;
+  let pasteFound = false;
+
+  if(!shortid.isValid(id))
+    return next(new NotFoundError('Paste not found.'));
+  
+  Paste.where('slug', id)
+  .findOneAndUpdate({$inc: {'views': 1}})
+  .lean()
+  .exec()
+  .then(paste => {
+    if(paste !== null) {
+      pasteFound = true;
+      res.type('text');
+      res.send(paste.content);
+    } else {
+      return LargePaste.getView(id)
+      .then(strm => {
+        res.type('text');
+        strm.setEncoding('utf8');
+        strm.pipe(res);
+        strm.on('error', next);
+      });
+    }
   }).catch(next);
 }
 
