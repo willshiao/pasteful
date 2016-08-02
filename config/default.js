@@ -7,7 +7,13 @@ module.exports =
     "url": "http://localhost:8080", //The public URL of the server
     "name": "pasteful", //The server name set in HTTP headers
     "port": 8080,
-    "trustProxy": ["loopback"] //The value of the app.set('trust proxy') setting
+    "trustProxy": ["loopback"], //The value of the app.set('trust proxy') setting
+    "raw": {
+      //The settings for the raw socket server
+      enabled: true, //Whether to enable it or not
+      port: 7777, //Port to bind to (should be different from HTTP server port)
+      timeout: 200
+    }
   },
   "paste": {
     "seed": null, //Integer seed used to generate URL slugs (optional)
@@ -56,11 +62,11 @@ module.exports =
         "label": "MongoDB"
       }
     },
-    "cache": {
+    "socket": {
       "console": {
         "level": "silly",
         "colorize": true,
-        "label": "Redis"
+        "label": "Socket"
       },
       "logToFile": true,
       "file": {
@@ -69,7 +75,7 @@ module.exports =
         "dirname": "logs",
         "filename": "site.",
         "datePattern": "yyyy-MM-dd.log",
-        "label": "Redis"
+        "label": "Socket"
       }
     }
   }

@@ -62,3 +62,6 @@ app.use(errorHandlers.MongoErrorHandler);
 //Bind to port
 app.listen(config.get('server.port'));
 serverLogger.info('Listening on port ' + config.get('server.port'));
+
+//Start raw socket server
+require('./lib/raw-socket')();
