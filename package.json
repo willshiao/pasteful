@@ -33,11 +33,8 @@
     "express": "^4.14.0",
     "gridfs-stream": "^1.1.1",
     "lodash": "^4.13.1",
-    "moment": "^2.14.1",
-    "mongodb": "^2.2.5",
     "mongoose": "^4.5.1",
     "ms": "^0.7.1",
-    "redis": "^2.6.2",
     "shortid": "^2.2.6",
     "stream-meter": "^1.0.4",
     "winston": "^2.2.0",
@@ -51,6 +48,6 @@
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
     "mocha-mongoose": "^1.2.0",
-    "mongodb": "^2.2.4"
+    "mongodb": "^2.2.5"
   }
 }

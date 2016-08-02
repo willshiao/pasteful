@@ -25,7 +25,8 @@ describe('models', function() {
   beforeEach(function(done) {
     // Make sure mongoose is connected
     if (mongoose.connection.db) return done();
-    mongoose.connect(config.get('db.uri'), config.get('db.options'), done);
+    mongoose.connect(config.get('db.uri'), config.get('db.options'));
+    done();
   });
 
   afterEach(function(done) {
