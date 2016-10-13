@@ -1,4 +1,5 @@
 'use strict';
+
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const config = require('config');
