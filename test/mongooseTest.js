@@ -32,7 +32,7 @@ describe('models', function() {
   afterEach(function(done) {
     clearDb(done);
   });
-  
+
   describe('Paste', function() {
     it('can add and retrieve a basic paste successfully', function(done) {
       const contents = generateContents();
@@ -56,7 +56,7 @@ describe('models', function() {
           .then(prod => Paste.findById(prod._id).lean().exec())
           .then(data => {
             comparePaste(data, contents, ['views']);
-            done()
+            done();
           })
           .catch(done);
       });
@@ -67,24 +67,24 @@ describe('models', function() {
         paste.save()
           .then(prod => Paste.findById(prod._id).lean().exec())
           .then(data => {
-            let expected = {
+            const expected = {
               title: 'Untitled',
               tags: [],
-              content: "",
+              content: '',
               listed: true,
               createdBy: 'Unknown',
               views: 0
             };
             comparePaste(data, expected);
-            done()
+            done();
           })
           .catch(done);
       });
     });
 
-    describe('#getRecent', function (done) {
+    describe('#getRecent', function(done) {
       it('retrieves recent promises', function() {
-        let contents = [
+        const contents = [
           generateContents(), generateContents(),
           generateContents()
         ].map(item => {item.listed = true; return item;});
@@ -99,7 +99,6 @@ describe('models', function() {
           })
           .catch(done);
       });
-      
     });
 
     function generateContents(exclude) {
@@ -126,7 +125,7 @@ describe('models', function() {
       ], exclude);
 
       _.each(expected, propName => {
-        dbData.should.have.property(propName)
+        dbData.should.have.property(propName);
       });
 
       _.each(shouldEqual, propName => {
@@ -136,5 +135,3 @@ describe('models', function() {
     }
   });
 });
-
-  

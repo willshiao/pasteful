@@ -4,15 +4,11 @@ const router = require('express').Router();
 const bodyParser = require('body-parser');
 const busboy = require('connect-busboy');
 
-const _ = require('lodash');
 const Paste = require('../models/paste');
 const config = require('config');
 const shortid = require('shortid');
 const logger = require('winston').loggers.get('server');
 const dbLogger = require('winston').loggers.get('db');
-const gfs = require('../lib/gfs').gfs;
-const db = require('../lib/gfs').conn.db;
-const fs = require('fs');
 
 const LargePaste = require('../lib/class/large-paste');
 
@@ -62,40 +58,40 @@ function newPaste(req, res, next) {
     Paste.newPaste({
       content: req.body,
       ip: req.ip
-    })
-    .save()
-    .then(saved => {
-      res.type('text');
-      res.send(config.get('server.url')+'/'+saved.slug);
-    })
-    .catch(err => {
-      logger.error('Error creating paste:', err);
-      next(err);
-    });
+    }).save()
+      .then(saved => {
+        res.type('text');
+        res.send(config.get('server.url') + '/' + saved.slug);
+      })
+      .catch(err => {
+        logger.error('Error creating paste:', err);
+        next(err);
+      });
   } else {
     if(!req.body.content)
       return next(new ArgumentError('No content field found'));
     if(Buffer.byteLength(req.body.content, 'utf8') > config.get('paste.maxSize'))
       return next(new ArgumentError('Paste too large.'));
 
-    Paste.newPaste(req.body).save()
-    .then(saved => {
-      res.json({
-        success: true,
-        url: config.get('server.url')+'/'+saved.slug
+    Paste.newPaste(req.body)
+      .save()
+      .then(saved => {
+        res.json({
+          success: true,
+          url: config.get('server.url') + '/' + saved.slug
+        });
+      })
+      .catch(err => {
+        logger.error('Error creating paste:', err);
+        next(err);
       });
-    })
-    .catch(err => {
-      logger.error('Error creating paste:', err);
-      next(err);
-    });
   }
 }
 
 function newGfsPaste(req, res, next) {
   if(!(req.is('application/x-www-formurlencoded') || req.is('multipart/*'))) return next();
   if(!req.busboy) return next(new ArgumentError('File upload not found.'));
-  
+
   const fields = {};
 
   req.busboy.on('field', (key, val, keyTrunc, valTrunc) => {
@@ -133,7 +129,7 @@ function newGfsPaste(req, res, next) {
       logger.debug('File stream closed.');
       return res.json({
         success: true,
-        url: config.get('server.url')+'/large/'+paste.metadata.slug
+        url: config.get('server.url') + '/large/' + paste.metadata.slug
       });
     });
 
@@ -157,72 +153,71 @@ function getPaste(req, res, next) {
     return next(new NotFoundError('Paste not found.'));
 
   Paste.where('slug', id)
-  .findOneAndUpdate({$inc: {'views': 1}})
-  .lean()
-  .exec()
-  .then(paste => {
-    if(paste === null)
-      return next(new NotFoundError('Paste not found.'));
-    res.type('text');
-    res.send(paste.content);
-  })
-  .catch(err => next);
-};
+    .findOneAndUpdate({$inc: {'views': 1}})
+    .lean()
+    .exec()
+    .then(paste => {
+      if(paste === null)
+        return next(new NotFoundError('Paste not found.'));
+      res.type('text');
+      res.send(paste.content);
+    })
+    .catch(err => next);
+}
 
 function getRecentPastes(req, res, next) {
   Paste.getRecent(10)
-  .then(results => {
-    res.json(results);
-  }).catch(err => {
-    logger.error(err);
-    next(err);
-  });
+    .then(results => {
+      res.json(results);
+    }).catch(err => {
+      logger.error(err);
+      next(err);
+    });
 }
 
 function getGfsPaste(req, res, next) {
   const id = req.params.id;
   LargePaste.getView(id)
-  .then(strm => {
-    res.type('text');
-    strm.setEncoding('utf8');
-    strm.pipe(res);
-    strm.on('error', next);
-  });
+    .then(strm => {
+      res.type('text');
+      strm.setEncoding('utf8');
+      strm.pipe(res);
+      strm.on('error', next);
+    });
 }
 
 function getGfsRecentPastes(req, res, next) {
   LargePaste.getRecent(10)
-  .then(data => {
-    res.json(data);
-  }).catch(next);
+    .then(data => {
+      res.json(data);
+    })
+    .catch(next);
 }
 
 function getBothPastes(req, res, next) {
   const id = req.params.id;
-  let pasteFound = false;
 
   if(!shortid.isValid(id))
     return next(new NotFoundError('Paste not found.'));
-  
+
   Paste.where('slug', id)
-  .findOneAndUpdate({$inc: {'views': 1}})
-  .lean()
-  .exec()
-  .then(paste => {
-    if(paste !== null) {
-      pasteFound = true;
-      res.type('text');
-      res.send(paste.content);
-    } else {
-      return LargePaste.getView(id)
-      .then(strm => {
+    .findOneAndUpdate({$inc: {'views': 1}})
+    .lean()
+    .exec()
+    .then(paste => {
+      if(paste !== null) {
         res.type('text');
-        strm.setEncoding('utf8');
-        strm.pipe(res);
-        strm.on('error', next);
-      });
-    }
-  }).catch(next);
+        res.send(paste.content);
+      } else {
+        return LargePaste.getView(id)
+          .then(strm => {
+            res.type('text');
+            strm.setEncoding('utf8');
+            strm.pipe(res);
+            strm.on('error', next);
+          });
+      }
+    }).catch(next);
 }
 
 module.exports = router;

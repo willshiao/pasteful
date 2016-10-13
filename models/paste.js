@@ -44,8 +44,8 @@ pasteSchema.statics.newPaste = function(data) {
   _.defaultsDeep(data, {
     title: 'Untitled',
     tags: [],
-    content: "",
-    userId: "",
+    content: '',
+    userId: '',
     listed: true,
     createdBy: 'Unknown'
   });

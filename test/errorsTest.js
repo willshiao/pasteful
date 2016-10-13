@@ -6,7 +6,7 @@ const NotFoundError = require('../lib/errors').NotFoundError;
 chai.should();
 
 describe('errors', function() {
-  
+
   describe('ArgumentError', function() {
     it('is an instance of itself', function() {
       new ArgumentError().should.be.an.instanceOf(ArgumentError);
