@@ -33,7 +33,7 @@
     "express": "^4.14.0",
     "gridfs-stream": "^1.1.1",
     "lodash": "^4.13.1",
-    "mongoose": "^4.5.1",
+    "mongoose": "^5.3.9",
     "ms": "^2.0.0",
     "shortid": "^2.2.6",
     "stream-meter": "^1.0.4",
