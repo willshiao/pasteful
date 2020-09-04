@@ -48,6 +48,6 @@
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
     "mocha-mongoose": "^1.2.0",
-    "mongodb": "^2.2.5"
+    "mongodb": "^3.6.1"
   }
 }
