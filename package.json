@@ -39,7 +39,7 @@
     "shortid": "^2.2.6",
     "stream-meter": "^1.0.4",
     "winston": "^2.2.0",
-    "winston-daily-rotate-file": "^1.1.4"
+    "winston-daily-rotate-file": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
