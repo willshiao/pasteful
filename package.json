@@ -27,8 +27,8 @@
   "dependencies": {
     "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
-    "config": "^1.21.0",
-    "connect-busboy": "0.0.2",
+    "config": "^3.3.9",
+    "connect-busboy": "1.0.0",
     "deasync": "^0.1.7",
     "express": "^4.14.0",
     "gridfs-stream": "^1.1.1",
